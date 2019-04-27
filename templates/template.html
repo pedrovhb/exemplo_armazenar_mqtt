@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dados de Temperatura</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js"></script>
+    <style>
+        h1, h3 {
+            text-align: center;
+            font-family: 'Ubuntu', 'Lucida Grande', 'Lucida Sans Unicode', 'Geneva', 'Verdana', sans-serif;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Dados de temperatura</h1>
+<h3>Temperatura atual: <span id="temperatura_atual"></span> °C</h3>
+<div style="height: 80vh">
+    <canvas id="grafico"></canvas>
+</div>
+
+<script>
+    let dados_temperatura = {{ dados_temperatura }};
+    let dados_criacao = {{ dados_criacao }};
+    const ctx = document.getElementById('grafico').getContext('2d');
+    const grafico = new Chart(ctx, {
+        type: 'line',
+        data: {
+            // Nossos dados de criação vêm em formato de timestamp em millisegundos, mas
+            // precisamos transformá-los em timestamp de segundos pra que a biblioteca
+            // reconheça o momento certo.
+            labels: dados_criacao.map((criacao) => new Date(criacao * 1000)),
+            datasets: [
+                {
+                    data: dados_temperatura,
+                    label: 'Temperatura',
+                    borderColor: "#e44848",
+                    backgroundColor: "#f48888"
+                }
+            ]
+        },
+        options: {
+            scales: {
+                xAxes: [{type: 'time', time: {unit: 'minute'}}],
+                yAxes: [{ticks: {min: 10, max: 40, stepSize: 5}}]
+            }
+        }
+    });
+
+    let temperatura_atual = dados_temperatura[dados_temperatura.length - 1];
+    document.getElementById('temperatura_atual').innerText = temperatura_atual.toFixed(2);
+
+    // Aqui definimos nosso update, chamando a cada 5 segundos uma função que atualiza os dados.
+    setInterval(atualizar_dados, 5000);
+
+    function atualizar_dados() {
+        fetch('/update')
+            .then((resposta) => resposta.json())
+            .then((dados) => {
+
+                // Atualizamos o texto que mostra "Temperatura atual: X °C" no topo da página
+                document.getElementById('temperatura_atual').innerText = dados['temperatura'].toFixed(2);
+
+                // Inserimos o novo ponto no nosso gráfico
+                grafico.data.labels.push(new Date(dados['criacao'] * 1000));
+                grafico.data.datasets[0].data.push(dados['temperatura']);
+
+                // Se houver mais de 100 pontos de dados no gráfico, removemos o menos recente, pra
+                // limitar o número de pontos na tela.
+                if (grafico.data.labels.length > 100) {
+                    grafico.data.labels.shift();
+                    grafico.data.datasets[0].data.shift();
+                }
+
+                // Chamamos a função que atualiza o visual do gráfico
+                grafico.update();
+            })
+    }
+</script>
+
+</body>
+</html>
