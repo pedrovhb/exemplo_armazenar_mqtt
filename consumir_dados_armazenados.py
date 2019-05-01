@@ -1,7 +1,7 @@
 import json
 
 from flask import Flask, render_template, jsonify
-from modelo_banco import criar_sessao, ValorTemperatura
+from modelagem_banco import criar_sessao, ValorTemperatura
 
 app = Flask(__name__)
 
@@ -17,8 +17,7 @@ def mostrar_dados():
 
     dados = list(reversed(dados))
 
-    # Criamos listas separadas pra temperatura e pra datetime de criação dos dados.
-
+    # Dividimos os dados de temperatura e criação, pra facilitar um pouco no lado do JavaScript
     dados_temperatura = []
     for dado in dados:
         dados_temperatura.append(dado.temperatura)

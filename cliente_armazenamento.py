@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from modelo_banco import criar_sessao, ValorTemperatura
+from modelagem_banco import criar_sessao, ValorTemperatura
 import paho.mqtt.client as mqtt
 
 
