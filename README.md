@@ -4,7 +4,7 @@ Esse repositório mostra o armazenamento de dados vindos de um broker MQTT, prot
 aplicações da Internet das Coisas. Foi feito pra disponibilizar o código relevante [a esse post no meu 
 blog](https://pedrovhb.com/aquisicao-de-dados-via-mqtt-e-armazenamento-em-banco-de-dados-relacional/)!
 
-![Diagrama](https://github.com/pedrovhb/exemplo_armazenar_mqtt/raw/master/images/Diagrama%20Armazenamento%20MQTT.svg)
+![Diagrama](https://github.com/pedrovhb/exemplo_armazenar_mqtt/raw/master/images/DiagramaArmazenamentoMQTT.png)
 
 ## Overview
 
